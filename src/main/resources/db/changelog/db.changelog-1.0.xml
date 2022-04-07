@@ -1,0 +1,279 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet author="RussianJeb" id="create-user-table">
+        <createTable tableName="users">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar(254)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="phone" type="varchar(15)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="enabled" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-verify-table">
+        <createTable tableName="verify_codes">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" unique="true" foreignKeyName="fk_verify_codes_users"
+                             references="users(id)"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="created_at" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-reset-table">
+        <createTable tableName="reset_codes">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_reset_codes_users" references="users(id)"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-project-tables">
+        <createTable tableName="project_types">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_project_types_users" references="users(id)"/>
+            </column>
+        </createTable>
+        <createTable tableName="projects">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="project_type_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="fk_projects_project_types"
+                             references="project_types(id)"/>
+            </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_projects_users" references="users(id)"/>
+            </column>
+            <column name="avatar" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="user_favorite_projects">
+            <column name="project_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_user_favorite_projects_projects"
+                             references="projects(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_user_favorite_projects_users"
+                             references="users(id)"/>
+            </column>
+        </createTable>
+        <createTable tableName="user_project_permissions">
+            <column name="project_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_user_project_permissions_projects"
+                             references="projects(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_user_project_permissions_users"
+                             references="users(id)"/>
+            </column>
+            <column name="permission" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-project-labels-table">
+        <createTable tableName="labels">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="varchar(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label_project_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_project_types_projects" references="projects(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-tasks-table">
+        <createTable tableName="tasks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_tasks_projects" references="projects(id)"/>
+            </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_tasks_users" references="users(id)"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repeat_unit" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="repeat_delay" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="perform_tasks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints foreignKeyName="fk_perform_tasks_tasks" references="tasks(id)"/>
+            </column>
+            <column name="execution_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="task_performers">
+            <column name="task_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_task_performers_tasks" references="tasks(id)"/>
+            </column>
+            <column name="performer_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_task_performers_users" references="users(id)"/>
+            </column>
+        </createTable>
+        <createTable tableName="task_labels">
+            <column name="task_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_task_labels_tasks" references="tasks(id)"/>
+            </column>
+            <column name="label_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_task_labels_labels" references="labels(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-comments">
+        <createTable tableName="comments">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_comments_tasks" references="tasks(id)"/>
+            </column>
+            <column name="sender_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_tasks_users" references="users(id)"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="attachments">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_attachments_comments" references="comments(id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="RussianJeb" id="create-logs-table">
+        <createTable tableName="actions">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="logs">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" deleteCascade="true" foreignKeyName="fk_logs_users" references="users(id)"/>
+            </column>
+            <column name="project_id" type="bigint">
+                <constraints nullable="true" deleteCascade="true" foreignKeyName="fk_logs_projects" references="projects(id)"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints nullable="true" deleteCascade="true" foreignKeyName="fk_logs_tasks" references="tasks(id)"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="true" deleteCascade="true" foreignKeyName="fk_logs_comments" references="comments(id)"/>
+            </column>
+            <column name="action_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_logs_actions" references="actions(id)"/>
+            </column>
+            <column name="action_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

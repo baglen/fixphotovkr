@@ -1,0 +1,1785 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "FixPhoto",
+    "version": "1.0"
+  },
+  "servers": [],
+  "tags": [
+    {
+      "name": "user",
+      "description": "User operation"
+    },
+    {
+      "name": "auth",
+      "description": "Authenticate operation"
+    },
+    {
+      "name": "project",
+      "description": "Project operation"
+    },
+    {
+      "name": "task",
+      "description": "Task operation"
+    },
+    {
+      "name": "Comments",
+      "description": "Comment operation"
+    }
+  ],
+  "paths": {
+    "/authentication/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Register user",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful register"
+          }
+        }
+      }
+    },
+    "/authentication/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verify user email",
+        "operationId": "verify",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful verify"
+          }
+        }
+      }
+    },
+    "/authentication/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Authenticate user",
+        "operationId": "authenticate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful auth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Auth error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authentication/restore": {
+      "post": {
+        "summary": "Send restore password request",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset code has been send"
+          }
+        }
+      }
+    },
+    "/authentication/change": {
+      "post": {
+        "summary": "Reset user password",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password has been changed"
+          },
+          "400": {
+            "description": "Invalid reset code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get user info",
+        "tags": [
+          "user"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Return user info"
+          }
+        }
+      },
+      "post": {
+        "summary": "Update user",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has been updated"
+          }
+        }
+      }
+    },
+    "/user/changePassword": {
+      "post": {
+        "summary": "Change user password",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User password has been changed"
+          }
+        }
+      }
+    },
+    "/projectTypes": {
+      "get": {
+        "summary": "Get user project types",
+        "tags": [
+          "project"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectTypeInfo"
+                  }
+                }
+              }
+            },
+            "description": "Return project types"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new project type",
+        "tags": [
+          "project"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProjectType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project type has been created"
+          }
+        }
+      }
+    },
+    "/projectTypes/{id}": {
+      "put": {
+        "summary": "Update user project type",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update user project type"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project type",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project type has been deleted"
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "summary": "Get user projects",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ProjectSummaryInfo"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Return user info"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new project",
+        "tags": [
+          "project"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project has been created"
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "put": {
+        "summary": "Update user project",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update user project"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project has been deleted"
+          }
+        }
+      }
+    },
+    "/projects/{id}/favorite": {
+      "post": {
+        "summary": "Mark or unmark project as favorite",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "favorite": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Return  project is favorite or not"
+          }
+        }
+      }
+    },
+    "/projects/{id}/avatar": {
+      "post": {
+        "summary": "Set avatar for project",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update project avatar"
+          }
+        }
+      }
+    },
+    "/projects/{id}/labels": {
+      "get": {
+        "summary": "Get project labels",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LabelInfo"
+                  }
+                }
+              }
+            },
+            "description": "Return labels"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add project label",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewLabel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New label has been added to project"
+          }
+        }
+      }
+    },
+    "/projects/{id}/labels/{labelId}": {
+      "put": {
+        "summary": "Update project label",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLabel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project label has been updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project label",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Label has been deleted from project"
+          }
+        }
+      }
+    },
+    "/projects/{id}/permissions": {
+      "get": {
+        "summary": "Get project user permissions",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectUserPermission"
+                  }
+                }
+              }
+            },
+            "description": "Return user permissions"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add update user project permission",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectUserPermission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User permission has been updated"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks": {
+      "get": {
+        "summary": "Get project tasks",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/TaskInfo"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Return tasks"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add project task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New task has been added to project"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}": {
+      "put": {
+        "summary": "Update project task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project task has been updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task has been deleted from project"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}/labels": {
+      "post": {
+        "summary": "Update project task labels",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskLabels"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project task labels has been updated"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}/assign": {
+      "post": {
+        "summary": "Assign performer to task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignPerformer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assign performer"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete performer from task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignPerformer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Delete performer from task"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}/perform": {
+      "get": {
+        "summary": "Get subtasks of task",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubTaskInfo"
+                  }
+                }
+              }
+            },
+            "description": "Return tasks"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}/comments": {
+      "get": {
+        "summary": "Get comments of task",
+        "tags": [
+          "comments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CommentInfo"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Return comments"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add comments to task",
+        "tags": [
+          "comments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NewComment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment has been added"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tasks/{taskId}/comments/{commentId}": {
+      "put": {
+        "summary": "Update comment",
+        "tags": [
+          "comments"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateComment"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment has been updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete comment",
+        "tags": [
+          "comments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment has been deleted"
+          }
+        }
+      }
+    },
+    "/attachment/{resourceAddress}": {
+      "get": {
+        "summary": "Get attachment",
+        "tags": [
+          "comments"
+        ],
+        "parameters": [
+          {
+            "name": "resourceAddress",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return comment attachment"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "jwtAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CommentInfo": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "text": {
+            "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateComment": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "NewComment": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "Repeat": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string"
+          },
+          "delay": {
+            "type": "integer"
+          }
+        },
+        "nullable": true
+      },
+      "SubTaskInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "executionTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TaskInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "repeat": {
+            "$ref": "#/components/schemas/Repeat"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "assigned": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateTaskLabels": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "description": "Label id"
+        }
+      },
+      "AssignPerformer": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "email",
+          "description": "Performer email"
+        }
+      },
+      "UpdateTask": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "repeat": {
+            "$ref": "#/components/schemas/Repeat"
+          }
+        }
+      },
+      "NewTask": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "repeat": {
+            "$ref": "#/components/schemas/Repeat"
+          }
+        }
+      },
+      "ProjectUserPermission": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "active": {
+                "type": "boolean"
+              }
+            }
+          },
+          "permission": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateProjectUserPermission": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "LabelInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateLabel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "NewLabel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateProject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "typeId": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "NewProject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "typeId": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateProjectType": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "NewProjectType": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectTypeInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectSummaryInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "favorite": {
+            "type": "boolean"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "url"
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "secondName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AuthRequest": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
